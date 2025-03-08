@@ -37,7 +37,7 @@ class HamulightRemote : public Component, public light::LightOutput {
     float newBrightness;
     bool newIsOn;
     state->current_values_as_brightness(&newBrightness);
-    state->current_values_as_on_off(&newIsOn);
+    state->current_values_as_binary(&newIsOn);
     int newPercentage = round(newBrightness * 100);
 
     if (newIsOn != isOn) {
