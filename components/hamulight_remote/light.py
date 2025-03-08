@@ -2,7 +2,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import light
 from esphome.const import CONF_ID
-import logging # Add logging import
+import logging
 
 from . import hamulight_remote_ns, HamulightRemote
 
@@ -11,7 +11,7 @@ CONFIG_SCHEMA = light.LIGHT_SCHEMA.extend({
 })
 
 async def to_code(config):
-    logging.info("hamulight_remote: to_code() called") # Use standard python logging
+    logging.info("hamulight_remote: light.py to_code() called")
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
-#    await light.register_light(var, config)
+    await light.register_light(var, config)
