@@ -1,4 +1,5 @@
 import esphome.codegen as cg
+from esphome.components import light # Add light import
 
 CODEOWNERS = ["foxhill67"]
 MULTI_CONF = False
