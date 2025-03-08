@@ -16,8 +16,6 @@ class HamulightRemote : public Component, public LightOutput {
    int period = 200;
    int percentage = 0;
    bool isOn = false;
-}  // namespace hamulight_remote
-}  // namespace esphome
   
  public:
   void setup() override {
@@ -122,5 +120,7 @@ class HamulightRemote : public Component, public LightOutput {
     return dimMesId + dimEncodedSignal + dimGlue + dimMesId + dimEncodedSignal;
     
   }
-
 };
+}  // namespace hamulight_remote
+}  // namespace esphome
+
