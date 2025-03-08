@@ -9,8 +9,6 @@ from esphome.core import CORE
 CODEOWNERS = ["foxhill67"]
 MULTI_CONF = False
 
-hamulight = cg.esphome_ns.namespace("hamulight")
-
 hamulight_remote_ns = cg.esphome_ns.namespace('hamulight_remote')
 HamulightRemote = hamulight_remote_ns.class_('HamulightRemote', cg.Component, light.LightOutput)
 CONFIG_SCHEMA = light.LIGHT_SCHEMA.extend({
