@@ -8,6 +8,6 @@ CONFIG_SCHEMA = light.LIGHT_SCHEMA.extend({
 })
 
 async def to_code(config):
-    var = cg.new_Pvariable(config[CONF_ID])
+    var = cv.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
     await light.register_light(var, config)
