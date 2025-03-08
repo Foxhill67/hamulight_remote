@@ -1,10 +1,12 @@
 #include "esphome.h"
+#include "esphome/components/light/light_output.h"
 #include <bitset>
 #include <string>
 
 namespace esphome {
 namespace hamulight_remote {
-class HamulightRemote : public Component, public LightOutput {
+
+class HamulightRemote : public Component, public light::LightOutput {
  private:
    std::string signalToggle = "101010101111110000001000100011101000111011101000111010001000100011101110111011101110111010001110100010001000100010001000111010001000100010001000111010101010";
    std::string dimMesId = "010101111110000001000100011101000111011101000111010001000100011101110111011101110100";
@@ -16,33 +18,33 @@ class HamulightRemote : public Component, public LightOutput {
    int period = 200;
    int percentage = 0;
    bool isOn = false;
-  
+
  public:
   void setup() override {
     pinMode(pin, OUTPUT);
-    for(int i = 0; i < 100; i++) {
+    for (int i = 0; i < 100; i++) {
       dimSignals[i] = createDimSignal(i + 1);
     }
   }
-  
-  LightTraits get_traits() override {
-    auto traits = LightTraits();
-    traits.set_supported_color_modes({light::ColorMode::BRIGHTNESS, ColorMode::ON_OFF});
+
+  light::LightTraits get_traits() override {
+    auto traits = light::LightTraits();
+    traits.set_supported_color_modes({light::ColorCapability::BRIGHTNESS, light::ColorCapability::ON_OFF});
     return traits;
   }
 
-  void write_state(LightState *state) override {
-
-    float newBrightness = state->current_values.get_brightness();
-    bool newIsOn = state->current_values.is_on();
+  void write_state(light::LightState *state) override {
+    float newBrightness;
+    bool newIsOn;
+    state->current_values_as_brightness(&newBrightness);
+    state->current_values_as_on_off(&newIsOn);
     int newPercentage = round(newBrightness * 100);
-    
+
     if (newIsOn != isOn) {
-      if (newIsOn == true) {
+      if (newIsOn) {
         sendSignal(signalToggle, 10, 0);
         percentage = 1;
         ESP_LOGD("main", "Turn light on");
-
       } else {
         slowDim(newPercentage, 1);
         sendSignal(signalToggle, 10, 0);
@@ -54,73 +56,53 @@ class HamulightRemote : public Component, public LightOutput {
       slowDim(percentage, newPercentage);
       ESP_LOGD("main", "Send brightness signal, old=%d, new=%d", percentage, newPercentage);
     }
-    
+
     ESP_LOGD("main", "------------------------------------");
     percentage = newPercentage;
     isOn = newIsOn;
   }
-  
+
   void slowDim(int percentage, int newPercentage) {
- 
     if (percentage < newPercentage) {
-        for (int p = percentage; p < newPercentage; p = p + 2) {
-          sendSignal(dimSignals[p - 1], 1, 10000);
-        }
+      for (int p = percentage; p < newPercentage; p += 2) {
+        sendSignal(dimSignals[p - 1], 1, 10000);
+      }
     } else {
-        for (int p = percentage; p > newPercentage; p = p - 2) {
-          sendSignal(dimSignals[p - 1], 1, 10000);
-        }    
+      for (int p = percentage; p > newPercentage; p -= 2) {
+        sendSignal(dimSignals[p - 1], 1, 10000);
+      }
     }
     sendSignal(dimSignals[newPercentage - 1], 2, 45000);
   }
-  
-  void sendSignal(std::string signal, int count, int messageSpacing) {
-    
-    for(int j = 0; j < count; j++) {
-      
-      for(int i = 0; i < signal.length(); i++) {
-          if (i == 0 && signal[i] == '0') {
-            digitalWrite(pin, HIGH);
-            delayMicroseconds(84);
-            digitalWrite(pin, LOW);
-          }
-        
-          if (signal[i] == '0') {
-            digitalWrite(pin, LOW);
-          } else {
-            digitalWrite(pin, HIGH);
-          }
-          delayMicroseconds(period);
-          
+
+  void sendSignal(const std::string &signal, int count, int messageSpacing) {
+    for (int j = 0; j < count; j++) {
+      for (size_t i = 0; i < signal.length(); i++) {
+        digitalWrite(pin, (signal[i] == '1') ? HIGH : LOW);
+        delayMicroseconds(period);
       }
       digitalWrite(pin, LOW);
       delayMicroseconds(messageSpacing);
     }
   }
-    
+
   std::string createDimSignal(int percentage) {
-    
     int dimLevel = minDimLevel - (dimStep * percentage) + dimStep;
     if (dimLevel < 249) {
-      dimLevel = dimLevel + 32222;
+      dimLevel += 32222;
     }
     if (percentage == 100) {
       dimLevel = 24357;
     }
 
     std::string binary = std::bitset<15>(dimLevel).to_string();
-    std::string dimEncodedSignal = "";
-    for(int i = 0; i < binary.length(); i++) {
-      if (binary[i] == '1') {
-        dimEncodedSignal = dimEncodedSignal + "0111";
-      } else { 
-        dimEncodedSignal = dimEncodedSignal + "0100";
-      }
+    std::string dimEncodedSignal;
+    for (char bit : binary) {
+      dimEncodedSignal += (bit == '1') ? "0111" : "0100";
     }
     return dimMesId + dimEncodedSignal + dimGlue + dimMesId + dimEncodedSignal;
-    
   }
 };
+
 }  // namespace hamulight_remote
 }  // namespace esphome
-
