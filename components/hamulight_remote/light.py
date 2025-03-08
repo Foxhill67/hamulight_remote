@@ -9,9 +9,6 @@ CONFIG_SCHEMA = light.LIGHT_SCHEMA.extend({
     cv.GenerateID(): cv.declare_id(HamulightRemote),
 })
 
-async def to_code(config):
-    var = cg.new_Pvariable(config[CONF_ID])
-    await cg.register_component(var, config)
 
 
 
