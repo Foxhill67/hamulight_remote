@@ -34,10 +34,14 @@ class HamulightRemote : public Component, public light::LightOutput {
   }
 
   void write_state(light::LightState *state) override {
-    float newBrightness;
-    bool newIsOn;
-    state->current_values_as_brightness(&newBrightness);
-    state->current_values_as_binary(&newIsOn);
+//    float newBrightness;
+//    bool newIsOn;
+//    state->current_values_as_brightness(&newBrightness);
+//    state->current_values_as_binary(&newIsOn);
+
+    float newBrightness = state->current_values.get_brightness();
+    bool newIsOn = state->current_values.is_on();
+   
     int newPercentage = round(newBrightness * 100);
 
     if (newIsOn != isOn) {
