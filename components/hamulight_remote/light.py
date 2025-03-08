@@ -14,4 +14,4 @@ async def to_code(config):
     logging.info("hamulight_remote: to_code() called") # Use standard python logging
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
-    await light.register_light(var, config)
+#    await light.register_light(var, config)
