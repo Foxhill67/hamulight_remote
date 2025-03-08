@@ -20,4 +20,4 @@ CONFIG_SCHEMA = light.LIGHT_SCHEMA.extend({
 def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     yield cg.register_component(var, config)
-    yield light.register_light(var, config
+    yield light.register_light(var, config)
