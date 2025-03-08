@@ -29,7 +29,7 @@ class HamulightRemote : public Component, public light::LightOutput {
 
   light::LightTraits get_traits() override {
     auto traits = light::LightTraits();
-    traits.set_supported_color_modes({light::ColorCapability::BRIGHTNESS, light::ColorCapability::ON_OFF});
+    traits.set_supported_color_modes({light::ColorMode::BRIGHTNESS, light::ColorMode::ON_OFF});
     return traits;
   }
 
