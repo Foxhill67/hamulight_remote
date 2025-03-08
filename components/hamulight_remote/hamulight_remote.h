@@ -21,10 +21,12 @@ class HamulightRemote : public Component, public light::LightOutput {
 
  public:
   void setup() override {
+    ESP_LOGD("hamulight", "HamulightRemote setup started");
     pinMode(pin, OUTPUT);
     for (int i = 0; i < 100; i++) {
       dimSignals[i] = createDimSignal(i + 1);
     }
+    ESP_LOGD("hamulight", "HamulightRemote setup completed");
   }
 
   light::LightTraits get_traits() override {
