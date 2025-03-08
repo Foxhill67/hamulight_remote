@@ -18,5 +18,5 @@ async def to_code(config):
     logging.info("hamulight_remote: id called")
     await cg.register_component(var, config)
     logging.info("hamulight_remote: component called")
-    await light.register_light(var, config)
-    logging.info("hamulight_remote: light called")
+    #await light.register_light(var, config)
+    #logging.info("hamulight_remote: light called")
