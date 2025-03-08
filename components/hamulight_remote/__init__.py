@@ -1,8 +1,5 @@
 import esphome.codegen as cg
 from esphome.components import light
-from esphome.const import (
-    CONF_ID
-)
 from esphome.core import CORE
 
 CODEOWNERS = ["foxhill67"]
