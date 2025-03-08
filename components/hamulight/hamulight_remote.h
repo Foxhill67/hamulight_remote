@@ -2,6 +2,8 @@
 #include <bitset>
 #include <string>
 
+namespace esphome {
+namespace hamulight_remote {
 class HamulightRemote : public Component, public LightOutput {
  private:
    std::string signalToggle = "101010101111110000001000100011101000111011101000111010001000100011101110111011101110111010001110100010001000100010001000111010001000100010001000111010101010";
@@ -14,7 +16,8 @@ class HamulightRemote : public Component, public LightOutput {
    int period = 200;
    int percentage = 0;
    bool isOn = false;
-
+}  // namespace hamulight_remote
+}  // namespace esphome
   
  public:
   void setup() override {
