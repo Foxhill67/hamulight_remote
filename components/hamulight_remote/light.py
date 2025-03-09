@@ -12,10 +12,10 @@ CONFIG_SCHEMA = light.LIGHT_SCHEMA.extend({
 
 async def to_code(config):
     logging.info("hamulight_remote: light.py to_code() called")
-    var = cg.new_Pvariable(config[CONF_ID])
-    logging.info("hamulight_remote: var called")
     await light.register_light(var, config)
     logging.info("hamulight_remote: light called")    
+    var = cg.new_Pvariable(config[CONF_ID])
+    logging.info("hamulight_remote: var called")
     id = config[CONF_ID].id
     logging.info("hamulight_remote: id called")
     await cg.register_component(var, config)
