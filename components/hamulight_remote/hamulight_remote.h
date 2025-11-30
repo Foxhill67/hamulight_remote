@@ -45,16 +45,16 @@ class HamulightRemote : public Component, public light::LightOutput {
     bool newIsOn = state->current_values.is_on();
    
     int newPercentage = round(newBrightness * 100);
-
+    ESP_LOGD("main", "write_state init, newBrightness=%f, newIsOn=%s, newPercentage=%d", newBrightness, newIsOn, newPercentage);
+   
     if (newIsOn != isOn) {
       if (newIsOn) {
         sendSignal(signalToggle, 10, 0);
         percentage = 1;
         ESP_LOGD("main", "Turn light on");
       } else {
-        slowDim(newPercentage, 0);
+        slowDim(newPercentage, 1);
         sendSignal(signalToggle, 10, 0);
-        percentage = 0;
         ESP_LOGD("main", "Turn light off");
       }
     }
@@ -69,17 +69,17 @@ class HamulightRemote : public Component, public light::LightOutput {
     isOn = newIsOn;
   }
 
-  void slowDim(int percentage, int newPercentage) {
-    if (percentage < newPercentage) {
-      for (int p = percentage; p < newPercentage; p += 2) {
+  void slowDim(int i_percentage, int i_newPercentage) {
+    if (i_percentage < i_newPercentage) {
+      for (int p = i_percentage; p < i_newPercentage; p += 2) {
         sendSignal(dimSignals[p - 1], 1, 10000);
       }
     } else {
-      for (int p = percentage; p > newPercentage; p -= 2) {
+      for (int p = i_percentage; p > i_newPercentage; p -= 2) {
         sendSignal(dimSignals[p - 1], 1, 10000);
       }
     }
-    sendSignal(dimSignals[newPercentage - 1], 2, 45000);
+    sendSignal(dimSignals[i_newPercentage - 1], 2, 45000);
   }
 
   void sendSignal(const std::string &signal, int count, int messageSpacing) {
