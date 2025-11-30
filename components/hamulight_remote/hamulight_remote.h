@@ -45,7 +45,7 @@ class HamulightRemote : public Component, public light::LightOutput {
     bool newIsOn = state->current_values.is_on();
    
     int newPercentage = round(newBrightness * 100);
-    ESP_LOGD("main", "write_state init, newBrightness=%f, newIsOn=%s, newPercentage=%d", newBrightness, newIsOn, newPercentage);
+    ESP_LOGD("main", "write_state init, newIsOn=%s, newPercentage=%d", newIsOn, newPercentage);
    
     if (newIsOn != isOn) {
       if (newIsOn) {
