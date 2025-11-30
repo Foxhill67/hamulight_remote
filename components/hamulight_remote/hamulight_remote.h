@@ -54,6 +54,7 @@ class HamulightRemote : public Component, public light::LightOutput {
       } else {
         slowDim(newPercentage, 1);
         sendSignal(signalToggle, 10, 0);
+        percentage = 0;
         ESP_LOGD("main", "Turn light off");
       }
     }
