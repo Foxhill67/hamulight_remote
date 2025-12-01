@@ -82,6 +82,18 @@ class HamulightRemote : public Component, public light::LightOutput {
   }
 
   void slowDim(int percentage, int newPercentage) {
+    if (percentage < 1) {
+      percentage = 1;
+    }
+    if (percentage > 99) {
+      percentage = 99;
+    }
+    if (newPercentage < 1) {
+      newPercentage = 1;
+    }
+    if (newPercentage > 99) {
+      newPercentage = 99;
+    }   
     if (percentage < newPercentage) {
       for (int p = percentage; p < newPercentage; p += 2) {
         sendSignal(dimSignals[p - 1], 1, 10000);
