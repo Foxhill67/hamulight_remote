@@ -72,8 +72,8 @@ class HamulightRemote : public Component, public light::LightOutput {
 
     // if light is on, change brightness from old to new percentage
     if (newIsOn && percentage != newPercentage) {
-      slowDim(percentage, newPercentage);
       ESP_LOGD("main", "Send brightness signal, old=%d, new=%d", percentage, newPercentage);
+      slowDim(percentage, newPercentage);
     }
 
     ESP_LOGD("main", "------------------------------------");
@@ -81,29 +81,18 @@ class HamulightRemote : public Component, public light::LightOutput {
     isOn = newIsOn;
   }
 
-  void slowDim(int percentage, int newPercentage) {
-    if (percentage < 1) {
-      percentage = 1;
-    }
-    if (percentage > 99) {
-      percentage = 99;
-    }
-    if (newPercentage < 1) {
-      newPercentage = 1;
-    }
-    if (newPercentage > 99) {
-      newPercentage = 99;
-    }   
-    if (percentage < newPercentage) {
-      for (int p = percentage; p < newPercentage; p += 2) {
+  void slowDim(int fromPercentage, int toPercentage) {
+
+    if (fromPercentage < toPercentage) {
+      for (int p = fromPercentage; p < toPercentage; p += 2) {
         sendSignal(dimSignals[p - 1], 1, 10000);
       }
     } else {
-      for (int p = percentage; p > newPercentage; p -= 2) {
+      for (int p = fromPercentage; p > toPercentage; p -= 2) {
         sendSignal(dimSignals[p - 1], 1, 10000);
       }
     }
-    sendSignal(dimSignals[newPercentage - 1], 2, 45000);
+    sendSignal(dimSignals[toPercentage - 1], 2, 45000);
   }
 
   void sendSignal(const std::string &signal, int count, int messageSpacing) {
