@@ -59,30 +59,29 @@ class HamulightRemote : public Component, public light::LightOutput {
       // switch in HA toggled
       if (newIsOn) {
         // switch turned on
+        ESP_LOGD("write_state", "Turning light on");
         sendSignal(signalToggle, 10, 0);
         percentage = 1; // we start almost off, slowDim below will increase brightness
-        ESP_LOGD("main", "Turn light on");
       } else {
         // switch turned off
+        ESP_LOGD("write_state", "Turning light off");
         slowDim(newPercentage, 0);
         sendSignal(signalToggle, 10, 0);
-        ESP_LOGD("main", "Turn light off");
       }
     }
 
     // if light is on, change brightness from old to new percentage
-    if (newIsOn && percentage != newPercentage) {
-      ESP_LOGD("main", "Send brightness signal, old=%d, new=%d", percentage, newPercentage);
+    if (newIsOn && percentage != newPercentage) {  
       slowDim(percentage, newPercentage);
     }
 
-    ESP_LOGD("main", "------------------------------------");
+    ESP_LOGD("write_state", "------------------------------------");
     percentage = newPercentage;
     isOn = newIsOn;
   }
 
   void slowDim(int fromPercentage, int toPercentage) {
-
+    ESP_LOGD("slowDim", "Send brightness signal, old=%d, new=%d", fromPercentage, toPercentage);
     if (fromPercentage < toPercentage) {
       for (int p = fromPercentage; p < toPercentage; p += 2) {
         sendSignal(dimSignals[p - 1], 1, 10000);
